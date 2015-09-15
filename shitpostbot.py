@@ -66,19 +66,17 @@ def generate(debug=False):
 		cprint(format("New text: {endc}{base}", base=base), color=bcolors.YELLOW)
 		del tempconf["override"]
 		json.dump(tempconf, open(os.path.join(path, "shitpostconfig.json"), "w"), indent = 2)
-	genobjects.reload()
 	return base
 
-authKeyPath = os.path.dirname(sys.argv[0])
-if not os.path.exists(os.path.join(authKeyPath, "authkeys.json")):
+if not os.path.exists(os.path.join(path, "authkeys.json")):
 	json.dump({
 		"TWITTER_CONSUMER_KEY": "",
 		"TWITTER_CONSUMER_SECRET": "",
 		"TWITTER_ACCESS_KEY": "",
 		"TWITTER_ACCESS_SECRET": ""
-		}, open(os.path.join(authKeyPath, "authkeys.json"), "w"), indent=2, sort_keys=True)
+		}, open(os.path.join(path, "authkeys.json"), "w"), indent=2, sort_keys=True)
 
-a = json.load(open(os.path.join(authKeyPath, "authkeys.json")))
+a = json.load(open(os.path.join(path, "authkeys.json")))
 
 auth = tweepy.OAuthHandler(a["TWITTER_CONSUMER_KEY"], a["TWITTER_CONSUMER_SECRET"])
 auth.set_access_token(a["TWITTER_ACCESS_KEY"], a["TWITTER_ACCESS_SECRET"])

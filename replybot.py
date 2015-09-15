@@ -3,7 +3,7 @@ from __future__ import print_function
 from shitpostbot import *
 import atexit
 import multiprocessing
-path = os.path.dirname(sys.argv[0])
+path = os.path.dirname(__file__)
 
 def getUniques(l):
 	nl = l[:]
