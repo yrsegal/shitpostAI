@@ -11,35 +11,52 @@ import json
 import os
 import sys
 
-path = os.path.dirname(__file__)
+def weightlist(obj):
+	l = []
+	for i in obj:
+		if isinstance(obj[i], int):
+			for j in range(obj[i]): l.append(i)
+	return l
 
-def randpop(iterable):
-	if not len(iterable):
-		return random.choice(genobjects['adverb'])
-	return iterable.pop(random.randrange(len(iterable)))
+class Words(Config):
+	def flatlist(self):
+		self.checkreload()
+		return list(self.data)
+	def weighted_list(self, tag):
+		return weightlist(self[tag])
+
+def randpop(weight, identifier):
+	if not len(weight):
+		return random.choice(genobjects[identifier])
+	x = random.choice(weight)
+	while x in weight:
+		weight.remove(x)
+	return x
+
+path = os.path.dirname(__file__)
 
 if not os.path.exists(os.path.join(path, "words.json")):
 	raise ValueError("There aren't any words to generate from!")
 
-genobjects = Config(os.path.join(path, "words.json"))
+genobjects = Words(os.path.join(path, "words.json"))
 def generate(debug=False):
-	temps = genobjects['plurnoun']
-	tempj = genobjects['adjective']
-	tempn = genobjects['noun']
-	tempav = genobjects['adverb']
-	tempve = genobjects['pastverb']
-	tempv = genobjects['verb']
-	base = random.choice(genobjects['base'])
+	plurals = genobjects.weighted_list('plurnoun')
+	adjectives = genobjects.weighted_list('adjective')
+	nouns = genobjects.weighted_list('noun')
+	adverbs = genobjects.weighted_list('adverb')
+	pastverbs = genobjects.weighted_list('pastverb')
+	verbs = genobjects.weighted_list('verb')
+	base = random.choice(genobjects.weighted_list('base'))
 
 	while "%" in base:
 		if debug: cprint(base)
-		base = base.replace("%s", randpop(temps), 1)
-		base = base.replace("%j", randpop(tempj), 1)
-		base = base.replace("%n", randpop(tempn), 1)
-		base = base.replace("%a", randpop(tempav), 1)
+		base = base.replace("%s", randpop(plurals, 'plurnoun'), 1)
+		base = base.replace("%j", randpop(adjectives, 'adjective'), 1)
+		base = base.replace("%n", randpop(nouns, 'noun'), 1)
+		base = base.replace("%a", randpop(adverbs, 'adverb'), 1)
 		while "%ved" in base:
-			base = base.replace("%ved", randpop(tempve), 1)
-		base = base.replace("%v", randpop(tempv), 1)
+			base = base.replace("%ved", randpop(pastverbs, 'pastverb'), 1)
+		base = base.replace("%v", randpop(verbs, 'verb'), 1)
 		base = base.replace("%i", str(random.randint(2, 20)), 1)
 	if debug: cprint(base)
 	if "override" in config:

@@ -9,12 +9,11 @@ if __name__ == "__main__":
 	nwords = {}
 	for i in words:
 		if not isinstance(words[i], list): continue
-		nwordsi = []
+		nwordsi = {}
 		for j in words[i]:
 			if j not in nwordsi:
 				j = whitespace.sub(" ", j.replace(".", "").lower().strip().rstrip())
-				nwordsi.append(j)
-		nwordsi.sort()
+				nwordsi[j] = 1
 		nwords[i] = nwordsi
 	nwords["_timestamp"] = "Generated at "+time.asctime(time.gmtime()) + " UTC"
 	json.dump(nwords, open(wordpath, "w"), indent=2, sort_keys=True)
